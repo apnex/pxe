@@ -46,7 +46,8 @@ Just mount this ISO to a CDROM of a VM and power on.
 
 **Warning**: Ensure you have created your VM with a following boot order:  
 1) HDD  
-2) CDROM  
+2) CDROM
+
 This is to ensure that after installation, the VM will boot normally.  
 If CDROM is before HDD, the VM will be in an infinite loop restarting and rebuilding itself!  
 
