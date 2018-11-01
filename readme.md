@@ -44,9 +44,16 @@ It is a tiny 1MB ISO - as it contains only iPXE code.
 All remaining OS files will be bootstrapped over the Internet via HTTP.  
 Just mount this ISO to a CDROM of a VM and power on.  
 
-**Warning**: Ensure you have created your VM with a following boot order:  
-1) HDD  
-2) CDROM
+**Warning**: Ensure you have created your VM with the following settings:  
+
+Minimum Specifications:  
+- vCPU: 2  
+- MEM: 2 GB  
+- DISK: 8 GB  
+
+Boot Order (must be **BIOS**):  
+- 1: HDD  
+- 2: CDROM
 
 This is to ensure that after installation, the VM will boot normally.  
 If CDROM is before HDD, the VM will be in an infinite loop restarting and rebuilding itself!  
