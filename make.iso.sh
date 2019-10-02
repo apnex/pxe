@@ -1,0 +1,63 @@
+#!/bin/bash
+# detect and resolve symlink
+if [[ $(readlink -f $0) =~ ^(.*)/([^/]+)$ ]]; then
+	WORKDIR="${BASH_REMATCH[1]}"
+	CALLED="${BASH_REMATCH[2]}"
+fi
+IPXEDIR="${WORKDIR}/ipxe/src"
+MYDIR="$(pwd)"
+
+# COLOURS
+NC='\033[0m' # no colour
+GREEN='\033[0;32m' # green
+ORANGE='\033[0;33m' # orange
+BLUE='\033[0;34m' # blue
+CYAN='\033[0;36m' # cyan
+LIGHTBLUE='\033[0;34m' # light blue
+function corange {
+	local STRING=${1}
+	printf "${ORANGE}${STRING}${NC}"
+}
+function cgreen {
+	local STRING=${1}
+	printf "${GREEN}${STRING}${NC}"
+}
+function ccyan {
+	local STRING=${1}
+	printf "${CYAN}${STRING}${NC}"
+}
+
+## check if ipxe exists, and download
+if [[ ! -d ${IPXEDIR} ]]; then
+	printf "$(ccyan "IPXE not found, downloading now...")\n" 1>&2
+	git clone https://github.com/ipxe/ipxe
+	make -C ${IPXEDIR}
+fi
+
+FILE=$1
+IPXE=$2
+if [[ -n "${FILE}" ]]; then
+	# setup custom ipxe flags
+	cat <<-EOF > ${IPXEDIR}/config/local/general.h
+		#define CONSOLE_CMD
+		#define IMAGE_COMBOOT
+		#define IMAGE_PNG
+	EOF
+	cat <<-EOF > ${IPXEDIR}/config/local/console.h
+		#define	CONSOLE_FRAMEBUFFER
+		#define PING_CMD
+		#define NSLOOKUP_CMD
+	EOF
+
+	# build iso
+	MAKECMD="make -C ${IPXEDIR} bin/ipxe.iso"
+	if [[ -n "${IPXE}" ]]; then
+		MAKECMD+=" EMBED=${MYDIR}/${IPXE}"
+	fi
+	echo "${MAKECMD}"
+	eval "${MAKECMD}"
+	mv ${IPXEDIR}/bin/ipxe.iso ${MYDIR}/${FILE}
+	printf "File: $(ccyan "${FILE}") created\n" 1>&2
+else
+	printf "[$(corange "ERROR")]: Usage: $(cgreen "make.iso.sh") $(ccyan "<output.file> [ <ipxe.script> ]")\n" 1>&2
+fi

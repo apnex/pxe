@@ -1,5 +1,4 @@
-install
-url --url  http://mirror.optus.net/centos/7/os/x86_64
+url --url http://centos.melbourneitmirror.net/8/BaseOS/x86_64/os
 eula --agreed
 reboot
 
@@ -11,7 +10,6 @@ lang en_US.UTF-8
 # Network information
 network --bootproto=dhcp --device=eth0 --onboot=on --noipv6 --activate
 network --hostname=centos.lab
-services --enabled=network
 	
 # Root password
 rootpw --plaintext VMware1!
@@ -24,10 +22,10 @@ bootloader --location=mbr --append="net.ifnames=0 biosdevname=0 ipv6.disable=1"
 clearpart --all --initlabel
 zerombr
 autopart --type=lvm --fstype=ext4
-# change to ext4 -- default is xfs and constantly gets corrupt on esx!
+# change to ext4 -- default is xfs gets corrupted on esx!
 
 # minimal install
-%packages --nobase --ignoremissing --excludedocs
+%packages --ignoremissing --excludedocs
 @core --nodefaults
 -aic94xx-firmware*
 -alsa-*
@@ -40,7 +38,6 @@ autopart --type=lvm --fstype=ext4
 -iwl*firmware
 -libertas*
 -kexec-tools
--NetworkManager*
 -plymouth*
 -postfix
 wget

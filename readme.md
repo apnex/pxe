@@ -61,22 +61,23 @@ If CDROM is before HDD, the VM will be in an infinite loop restarting and rebuil
 #### Backstory Stuff
 These are the steps I performed to create the above ISO and PXE boot sequence.
 
-**Create an initial iPXE script called `boot.ipxe` to kickoff the launch**
+**Create an initial iPXE script called `init.ipxe` to kickoff the launch**
 ```
 #!ipxe
 dhcp
 chain http://pxe.apnex.io/centos.ipxe
 ```
 This will be "baked" into the ISO image to load another iPXE script over the Internet.  
-This file is referenced using the `make bin/ipxe.iso EMBED=boot.ipxe` command.  
+This file is referenced using the `make bin/ipxe.iso EMBED=init.ipxe` command.  
 
 **Create the upstream iPXE script `centos.ipxe` that will be called from the mounted ISO**
 ```
 #!ipxe
 set boot http://pxe.apnex.io
-set mirror http://mirror.optus.net/centos/7
-kernel ${mirror}/os/x86_64/images/pxeboot/vmlinuz initrd=initrd.img ks=${boot}/centos.ks ip=dhcp
-initrd ${mirror}/os/x86_64/images/pxeboot/initrd.img
+set mirror http://centos.melbourneitmirror.net/8/BaseOS/x86_64/os
+dhcp
+kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ip=dhcp ks=${boot}/centos.ks
+initrd ${mirror}/images/pxeboot/initrd.img
 boot
 ```
 This will then be hosted online at `http://pxe.apnex.io/centos.ipxe` ready to be called.  
@@ -85,8 +86,7 @@ It is also calling a kickstart file `centos.ks` for CentOS specific install opti
 
 **Create a kickstart file `centos.ks`**
 ```
-install
-url --url  http://mirror.optus.net/centos/7/os/x86_64
+url --url http://centos.melbourneitmirror.net/8/BaseOS/x86_64/os
 eula --agreed
 reboot
 
@@ -98,7 +98,6 @@ lang en_US.UTF-8
 # Network information
 network --bootproto=dhcp --device=eth0 --onboot=on --noipv6 --activate
 network --hostname=centos.lab
-services --enabled=network
 	
 # Root password
 rootpw --plaintext VMware1!
@@ -114,7 +113,7 @@ autopart --type=lvm --fstype=ext4
 # change to ext4 -- default is xfs and constantly gets corrupt on esx!
 
 # minimal install
-%packages --nobase --ignoremissing --excludedocs
+%packages --ignoremissing --excludedocs
 @core --nodefaults
 -aic94xx-firmware*
 -alsa-*
@@ -127,7 +126,6 @@ autopart --type=lvm --fstype=ext4
 -iwl*firmware
 -libertas*
 -kexec-tools
--NetworkManager*
 -plymouth*
 -postfix
 wget

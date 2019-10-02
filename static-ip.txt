@@ -1,0 +1,14 @@
+%firstboot --interpreter=busybox
+
+# extract network info from bootup
+VMKINT="vmk0"
+VMKLINE=$(localcli network ip interface ipv4 get | grep "${VMKINT}")
+IPADDR=$(echo "${VMKLINE}" | awk '{print $2}')
+NETMASK=$(echo "${VMKLINE}" | awk '{print $3}')
+GATEWAY=$(esxcfg-route | awk '{print $5}')
+DNS=$(localcli network ip dns server list | grep DNS | awk '{ print $3 }')
+HOSTNAME=$(nslookup ${IPADDR} ${DNS} | grep name | awk '{ print $4 }')               
+if [ -z "$HOSTNAME" ]; then
+	HOSTNAME="esx"
+fi
+echo "network --bootproto=static --addvmportgroup=1 --device=vmnic0 --ip=${IPADDR} --netmask=${NETMASK} --gateway=${GATEWAY} --nameserver=${DNS} --hostname=${HOSTNAME}" > /tmp/networkconfig
