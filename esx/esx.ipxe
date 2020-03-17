@@ -1,0 +1,5 @@
+#!ipxe
+set boot http://boot.lab:5081
+dhcp
+kernel ${boot}/mboot.c32 -c ${boot}/boot.cfg BOOTIF=01-${net0/mac:hexhyp}
+boot

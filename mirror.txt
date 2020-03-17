@@ -1,0 +1,2 @@
+#curl 'http://mirrorlist.centos.org/?arch=x86_64&release=8&repo=BaseOS'
+#curl 'http://mirrorlist.centos.org/?arch=x86_64&release=7&repo=os'

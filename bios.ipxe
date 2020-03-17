@@ -1,0 +1,34 @@
+#!ipxe
+
+set user-class apnex
+set node-esx http://boot.lab:5081
+set node-centos http://boot.lab:5082
+ifopen net0
+route
+console -x 1024 -y 768 --picture http://boot.lab/pxe.png
+
+:start
+menu Please choose an operating system to install
+item esx ESX 6.7 U3 Node
+item centos CentOS 7 Node
+item shell Drop to iPXE shell
+choose --default esx --timeout 6000 target && goto ${target}
+
+:failed
+echo Booting failed, dropping to shell
+goto shell
+
+:shell
+echo Type 'exit' to get the back to the menu
+shell
+set menu-timeout 0
+set submenu-timeout 0
+goto start
+
+:esx
+set boot ${node-esx}
+chain ${boot}/esx.ipxe
+
+:centos
+set boot ${node-centos}
+chain ${boot}/centos.ipxe
