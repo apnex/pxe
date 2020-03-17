@@ -1,4 +1,5 @@
 #!/bin/bash
+## prerequisites ## dnf install xz-devel make
 # detect and resolve symlink
 if [[ $(readlink -f $0) =~ ^(.*)/([^/]+)$ ]]; then
 	WORKDIR="${BASH_REMATCH[1]}"
@@ -12,8 +13,7 @@ NC='\033[0m' # no colour
 GREEN='\033[0;32m' # green
 ORANGE='\033[0;33m' # orange
 BLUE='\033[0;34m' # blue
-CYAN='\033[0;36m' # cyan
-LIGHTBLUE='\033[0;34m' # light blue
+CYAN='\e[0;36m' # cyan
 function corange {
 	local STRING=${1}
 	printf "${ORANGE}${STRING}${NC}"
