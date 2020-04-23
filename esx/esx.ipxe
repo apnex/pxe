@@ -1,5 +1,10 @@
 #!ipxe
-set boot http://boot.lab:5081
+set boot http://esx.apnex.io
 dhcp
+show net0/ip
+show net0/netmask
+show net0/gateway
+show net0/dns
+show net0/dhcp-server
 kernel ${boot}/mboot.c32 -c ${boot}/boot.cfg BOOTIF=01-${net0/mac:hexhyp}
 boot

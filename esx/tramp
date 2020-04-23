@@ -1,0 +1,4 @@
+#!gpxe
+
+set filename https://vcenter7.lab:6501/vmw/rbd/tramp
+chain https://vcenter7.lab:6501/vmw/rbd/tramp
