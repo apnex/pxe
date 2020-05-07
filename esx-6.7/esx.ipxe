@@ -1,5 +1,5 @@
 #!ipxe
-set boot http://esx.apnex.io
+set boot http://esx.apnex.io/6.7
 dhcp
 show net0/ip
 show net0/netmask

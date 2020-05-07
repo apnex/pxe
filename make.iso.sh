@@ -39,6 +39,7 @@ IPXE=$2
 if [[ -n "${FILE}" ]]; then
 	# setup custom ipxe flags
 	cat <<-EOF > ${IPXEDIR}/config/local/general.h
+		#define DOWNLOAD_PROTO_HTTPS
 		#define PARAM_CMD
 		#define CONSOLE_CMD
 		#define IMAGE_COMBOOT
