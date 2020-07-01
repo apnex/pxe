@@ -1,0 +1,19 @@
+#!ipxe
+:start
+menu
+item centos    Boot Linux
+item shell    Enter iPXE shell
+item exit     Exit to BIOS
+choose --default centos --timeout 3000 target && goto ${target}
+
+:centos
+dhcp
+chain http://pxe.apnex.io/centos.ipxe
+
+:shell
+echo Type 'exit' to get the back to the menu
+shell
+goto start
+
+:exit
+exit

@@ -8,7 +8,7 @@ keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
 # Network information
-network --bootproto=dhcp --device=eth0 --onboot=on --noipv6 --activate
+network --bootproto=static --device=eth0 --ip=10.30.0.50 --netmask=255.255.255.0 --gateway=10.30.0.254 --nameserver=8.8.8.8 --onboot=on --noipv6 --activate
 network --hostname=centos.lab
 	
 # Root password
