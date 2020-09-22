@@ -1,0 +1,8 @@
+#!ipxe
+dhcp net0
+
+set base-url http://mirror.aarnet.edu.au/pub/ubuntu/archive/ubuntu/dists/bionic/main/installer-amd64/current/images/netboot/ubuntu-installer/amd64
+kernel ${base-url}/linux
+initrd ${base-url}/initrd.gz
+imgargs linux locale=en_US.UTF-8 keyboard-configuration/layoutcode=us quiet splash toram ip=dhcp rw
+boot

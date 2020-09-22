@@ -1,0 +1,17 @@
+#!ipxe
+ifopen net0
+set net0/ip 10.30.0.50  
+set net0/netmask 255.255.255.0
+set net0/gateway 10.30.0.254
+set dns 8.8.8.8
+
+set boot http://pxe.apnex.io
+set mirror http://mirror.aarnet.edu.au/pub/centos/7/os/x86_64
+kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ks=${boot}/centos.ks ksdevice=eth0 net.ifnames=0 biosdevname=0 ip=10.30.0.50::10.30.0.254:255.255.255.0:router:eth0:none nameserver=8.8.8.8
+initrd ${mirror}/images/pxeboot/initrd.img
+
+show net0/ip
+show net0/netmask
+show net0/gateway
+show dns
+boot
