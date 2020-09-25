@@ -46,7 +46,7 @@ nano
 open-vm-tools
 %end
 
-%post
+%post --interpreter /bin/bash
 rm -f /etc/sysconfig/network-scripts/ifcfg-ens*
 cat > /etc/sysconfig/network-scripts/ifcfg-eth0 <<EOM
 TYPE=Ethernet
@@ -78,5 +78,9 @@ EOF
 
 chmod 664 /etc/systemd/system/runonce.service
 systemctl enable runonce
+
+echo "master: IP" >> /root/test
+curl -Lo /root/runonce.sh https://raw.githubusercontent.com/apnex/pxe/master/centos.docker/runonce.sh
+chmod 755 /root/runonce.sh
 
 %end
