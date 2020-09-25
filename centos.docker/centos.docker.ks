@@ -61,7 +61,7 @@ EOM
 sed -i 's/.*UseDNS.*/UseDNS no/g' /etc/ssh/sshd_config
 service sshd restart
 
-### a whole bunch of hacking to see what scripts we can get running on boot
+### a whole bunch of hacking to see what scripts we can get running on first boot
 
 cat << EOF > /etc/systemd/system/runonce.service
 [Unit]
