@@ -61,8 +61,7 @@ EOM
 sed -i 's/.*UseDNS.*/UseDNS no/g' /etc/ssh/sshd_config
 service sshd restart
 
-### a whole bunch of hacking to see what scripts we can get running on first boot
-
+## setup runonce service
 cat << EOF > /etc/systemd/system/runonce.service
 [Unit]
 Description=Run once
@@ -79,7 +78,8 @@ EOF
 chmod 664 /etc/systemd/system/runonce.service
 systemctl enable runonce
 
-echo "master: IP" >> /root/test
+## setup runonce script
+touch /tmp/runonce
 curl -Lo /root/runonce.sh https://raw.githubusercontent.com/apnex/pxe/master/centos.docker/runonce.sh
 chmod 755 /root/runonce.sh
 
