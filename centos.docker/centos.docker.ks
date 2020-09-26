@@ -80,7 +80,7 @@ systemctl enable runonce
 
 ## setup runonce script
 touch /tmp/runonce
-curl -Lo /root/runonce.sh https://raw.githubusercontent.com/apnex/pxe/master/centos.docker/runonce.sh
+curl -Lo /root/runonce.sh https://labops.sh/docker/runonce.sh
 chmod 755 /root/runonce.sh
 
 %end
