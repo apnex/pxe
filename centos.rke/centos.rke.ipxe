@@ -1,0 +1,13 @@
+#!ipxe
+dhcp
+
+set boot http://pxe.apnex.io
+set mirror http://mirror.aarnet.edu.au/pub/centos/7/os/x86_64
+kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ip=dhcp ks=${boot}/centos.rke.ks
+initrd ${mirror}/images/pxeboot/initrd.img
+
+show net0/ip
+show net0/netmask
+show net0/gateway
+show dns
+boot
