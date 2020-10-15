@@ -1,6 +1,6 @@
 #!/bin/bash
 ## prerequisites ##
-# yum install -y xz-devel make gcc
+# yum install -y xz-devel make gcc makeisofs syslinux
 # detect and resolve symlink
 if [[ $(readlink -f $0) =~ ^(.*)/([^/]+)$ ]]; then
 	WORKDIR="${BASH_REMATCH[1]}"
