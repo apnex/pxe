@@ -2,15 +2,15 @@ url --url http://mirror.aarnet.edu.au/pub/centos/7/os/x86_64
 eula --agreed
 reboot
 
+# Initial
 firstboot --enable
 ignoredisk --only-use=sda
 keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
-# Network information
-network --bootproto=dhcp --device=eth0 --onboot=on --noipv6 --activate
-network --hostname=centos.lab
-	
+# Network info
+#network --device=eth0 --noipv6 --hostname=centos.lab
+
 # Root password
 rootpw --plaintext VMware1!
 selinux --disabled
@@ -46,19 +46,10 @@ nano
 open-vm-tools
 %end
 
+# install net script
 %post
-rm -f /etc/sysconfig/network-scripts/ifcfg-ens*
-cat > /etc/sysconfig/network-scripts/ifcfg-eth0 <<EOM
-TYPE=Ethernet
-BOOTPROTO=dhcp
-NAME=eth0
-DEVICE=eth0
-ONBOOT=yes
-EOM
-
 # need to add some code to modify sshd_config: UseDNS = no
 # this is causing delays on SSH login prompts
 sed -i 's/.*UseDNS.*/UseDNS no/g' /etc/ssh/sshd_config
 service sshd restart
-
 %end
