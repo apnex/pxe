@@ -1,6 +1,7 @@
 #!ipxe
 set boot http://pxe.apnex.io
 set mirror http://mirror.aarnet.edu.au/pub/centos/7/os/x86_64
+set kickstart ${boot}/centos.ks
 
 :start
 menu
@@ -15,7 +16,7 @@ echo ADDRESS-: ${net0/ip}
 echo NETMASK-: ${net0/netmask}
 echo GATEWAY-: ${net0/gateway}
 echo DNS-----: ${dns}
-kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ks=${boot}/centos.ks ksdevice=eth0 net.ifnames=0 biosdevname=0 ip=::::centos:eth0:dhcp
+kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ks=${kickstart} ksdevice=eth0 net.ifnames=0 biosdevname=0 ip=::::centos:eth0:dhcp
 initrd ${mirror}/images/pxeboot/initrd.img
 boot
 
@@ -29,7 +30,7 @@ echo ADDRESS-: ${net0/ip}
 echo NETMASK-: ${net0/netmask}
 echo GATEWAY-: ${net0/gateway}
 echo DNS-----: ${dns}
-kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ks=${boot}/centos.ks ksdevice=eth0 net.ifnames=0 biosdevname=0 ip=${net0/ip}::${net0/gateway}:${net0/netmask}:centos:eth0:none nameserver=${dns}
+kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ks=${kickstart} ksdevice=eth0 net.ifnames=0 biosdevname=0 ip=${net0/ip}::${net0/gateway}:${net0/netmask}:centos:eth0:none nameserver=${dns}
 initrd ${mirror}/images/pxeboot/initrd.img
 boot
 

@@ -8,8 +8,7 @@ keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
 # Network information
-network --bootproto=dhcp --device=eth0 --onboot=on --noipv6 --activate
-network --hostname=centos.lab
+#network --bootproto=dhcp --device=eth0 --onboot=on --noipv6 --hostname=centos.lab
 	
 # Root password
 rootpw --plaintext VMware1!
@@ -47,14 +46,6 @@ open-vm-tools
 %end
 
 %post --interpreter /bin/bash
-rm -f /etc/sysconfig/network-scripts/ifcfg-ens*
-cat > /etc/sysconfig/network-scripts/ifcfg-eth0 <<EOM
-TYPE=Ethernet
-BOOTPROTO=dhcp
-NAME=eth0
-DEVICE=eth0
-ONBOOT=yes
-EOM
 
 # need to add some code to modify sshd_config: UseDNS = no
 # this is causing delays on SSH login prompts

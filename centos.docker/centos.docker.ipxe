@@ -1,13 +1,40 @@
 #!ipxe
-dhcp
-
 set boot http://pxe.apnex.io
 set mirror http://mirror.aarnet.edu.au/pub/centos/7/os/x86_64
-kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ip=dhcp ks=${boot}/centos.docker.ks
-initrd ${mirror}/images/pxeboot/initrd.img
+set kickstart ${boot}/centos.docker.ks
 
-show net0/ip
-show net0/netmask
-show net0/gateway
-show dns
+:start
+menu
+item dhcp	centos [dhcp]
+item static	centos [static]
+item shell	shell
+choose --default dhcp --timeout 10000 target && goto ${target}
+
+:dhcp
+dhcp
+echo ADDRESS-: ${net0/ip}
+echo NETMASK-: ${net0/netmask}
+echo GATEWAY-: ${net0/gateway}
+echo DNS-----: ${dns}
+kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ks=${kickstart} ksdevice=eth0 net.ifnames=0 biosdevname=0 ip=::::centos:eth0:dhcp
+initrd ${mirror}/images/pxeboot/initrd.img
 boot
+
+:static
+ifopen net0
+echo -n net0.address-: && read net0/ip
+echo -n net0.netmask-: && read net0/netmask
+echo -n net0.gateway-: && read net0/gateway
+echo -n net0.dns-----: && read dns
+echo ADDRESS-: ${net0/ip}
+echo NETMASK-: ${net0/netmask}
+echo GATEWAY-: ${net0/gateway}
+echo DNS-----: ${dns}
+kernel ${mirror}/images/pxeboot/vmlinuz initrd=initrd.img ks=${kickstart} ksdevice=eth0 net.ifnames=0 biosdevname=0 ip=${net0/ip}::${net0/gateway}:${net0/netmask}:centos:eth0:none nameserver=${dns}
+initrd ${mirror}/images/pxeboot/initrd.img
+boot
+
+:shell
+echo Type 'exit' to get the back to the menu
+shell
+goto start
