@@ -1,0 +1,35 @@
+#!ipxe
+set boot http://esx.apnex.io/7.0
+
+:start
+menu
+item dhcp	esx [dhcp]
+item static	esx [static]
+item shell	shell
+choose --default shell --timeout 10000 target && goto ${target}
+
+:dhcp
+dhcp
+echo ADDRESS-: ${net0/ip}
+echo NETMASK-: ${net0/netmask}
+echo GATEWAY-: ${net0/gateway}
+echo DNS-----: ${net0/dns}
+echo DHCP----: ${net0/dhcp-server}
+kernel ${boot}/mboot.c32 -c ${boot}/boot.cfg BOOTIF=01-${net0/mac:hexhyp}
+boot
+
+:static
+ifopen net0
+echo -n net0.address-: && read net0/ip
+echo -n net0.netmask-: && read net0/netmask
+echo -n net0.gateway-: && read net0/gateway
+echo -n net0.dns-----: && read dns
+echo ADDRESS-: ${net0/ip}
+echo NETMASK-: ${net0/netmask}
+echo GATEWAY-: ${net0/gateway}
+echo DNS-----: ${dns}
+
+:shell
+echo Type 'exit' to get the back to the menu
+shell
+goto start

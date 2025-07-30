@@ -1,0 +1,50 @@
+#!ipxe
+# Rocky Linux
+# https://rockylinux.org/
+
+## network
+#isset ${dhcp-server} && set ipparam ip=dhcp || set ipparam ip=${ip}::${gateway}:${netmask}:::none nameserver=${dns}
+#set ip_config ip=${net0.dhcp/ip}::${gateway}:${netmask}:${net0.dhcp/hostname}.gsi.de:ib0:off nameserver=${dns} rd.route=${route} ipv6.disable=1
+set ip_config ip=::::rocky:eth0:dhcp
+set ip_config BOOTIF=${net0/mac} net.ifnames=0 biosdevname=0 ipv6.disable=1 ${ip_config}
+
+## params
+#set mirror http://mirror.aarnet.edu.au
+set mirror http://download.rockylinux.org
+set os_version 9.6
+set dir pub/rocky/${os_version}/BaseOS/x86_64/os
+set repo ${mirror}/${dir}
+
+## install_mode
+#set install_options inst.graphical
+#set install_options inst.repo=${repo} inst.stage2=${repo} inst.graphical
+# inst.sshd
+#set install_mode inst.text
+
+#kickstart
+set kickstart http://pxe.apnex.io/rocky/rocky-96-nvme0n1.ks
+
+## dhcp
+ifopen net0
+dhcp
+
+# show net stats
+echo ADDRESS-: ${net0/ip}
+echo NETMASK-: ${net0/netmask}
+echo GATEWAY-: ${net0/gateway}
+echo DNS-----: ${dns}
+route
+ifstat net0
+
+# boot
+imgfree
+kernel ${repo}/images/pxeboot/vmlinuz \
+	nompath \
+	inst.nompath \
+	inst.repo=${repo} \
+	inst.stage2=${repo} \
+	inst.ks=${kickstart} \
+	inst.text \
+	${ip_config}
+initrd ${repo}/images/pxeboot/initrd.img
+boot

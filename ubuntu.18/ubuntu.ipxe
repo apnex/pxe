@@ -1,8 +1,9 @@
 #!ipxe
 dhcp net0
 
-set base-url http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/current/legacy-images/netboot/ubuntu-installer/amd64/
-set preseed-url https://gist.githubusercontent.com/gianarb/acea1ca5b73a318fd74cbb002cae21f3/raw/76e5d036ee28c485cc7cf42a317c99e678f08a6c/ubuntu.preseed
+set base-url http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/current/legacy-images/netboot/ubuntu-installer/amd64
+set preseed-url http://pxe.apnex.io/ubuntu.preseed
 kernel ${base-url}/linux console=ttyS1,115200n8 auto=true fb=false priority=critical preseed/locale=en_GB url=${preseed-url} DEBCONF_DEBUG=5
 initrd ${base-url}/initrd.gz
+
 boot

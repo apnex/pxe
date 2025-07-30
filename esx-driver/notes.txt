@@ -1,0 +1,19 @@
+## about VIBS
+https://www.yellow-bricks.com/2011/11/29/how-to-create-your-own-vib-files/
+https://blogs.vmware.com/vsphere/2011/09/whats-in-a-vib.html
+https://kb.vmware.com/s/article/1017588
+
+## Just DEB packages?
+
+## info on vmk modules
+https://vdc-download.vmware.com/vmwb-repository/dcr-public/24be7af7-d9cd-48d9-bab8-8c91614be19d/0ca33108-8017-4b40-86b9-f066456894ea/doc/GUID-F4C954F5-0C39-4A51-ABE3-414FD9DFEAA7.html
+
+## Google vNIC Driver
+Compile for DEB?
+https://github.com/GoogleCloudPlatform/compute-virtual-ethernet-linux
+
+## deb packages
+https://github.com/GoogleCloudPlatform/compute-virtual-ethernet-linux/releases
+
+## direct to 1.3.3
+https://github.com/GoogleCloudPlatform/compute-virtual-ethernet-linux/releases/download/v1.3.3/gve-dkms_1.3.3_all.deb

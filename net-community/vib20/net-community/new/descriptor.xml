@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<vib version="5.0">
+  <type>bootbank</type>
+  <name>obi-net</name>
+  <version>1.2.3.4</version>
+  <vendor>VMW</vendor>
+  <summary>VMware Esx VIB</summary>
+  <description>Obi Network Drivers for ESXi</description>
+  <release-date>2022-03-10T21:21:26.019416+00:00</release-date>
+  <urls/>
+  <relationships>
+    <depends>
+      <constraint name="vmkapi_2_6_0_0"/>
+    </depends>
+    <conflicts/>
+    <replaces/>
+    <provides/>
+    <compatibleWith/>
+  </relationships>
+  <software-tags>
+    <tag>module</tag>
+    <tag>driver</tag>
+  </software-tags>
+  <system-requires>
+    <maintenance-mode>false</maintenance-mode>
+  </system-requires>
+  <file-list>
+    <file>usr/lib/vmware/vmkmod/vmkcndi-community</file>
+  </file-list>
+  <acceptance-level>community</acceptance-level>
+  <live-install-allowed>true</live-install-allowed>
+  <live-remove-allowed>true</live-remove-allowed>
+  <cimom-restart>false</cimom-restart>
+  <stateless-ready>true</stateless-ready>
+  <overlay>false</overlay>
+  <payloads>
+    <payload name="obinet" type="vgz" size="23073">
+      <checksum checksum-type="sha-256" verify-process="gunzip">43201e2c16b73fa29fc6a93820a15a91292c81e11a76307b7625408449023f7a</checksum>
+      <checksum checksum-type="sha-256">bcd72aaac9605546f4998196bac1af3dcdf1f773f7994e32fe6b1ee44e75f520</checksum>
+      <checksum checksum-type="sha-1" verify-process="gunzip">997405548478c97dc476f367e60f9d2ff27e37b8</checksum>
+    </payload>
+  </payloads>
+</vib>

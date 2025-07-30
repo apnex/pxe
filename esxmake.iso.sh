@@ -39,40 +39,35 @@ FILE=$1
 IPXE=$2
 if [[ -n "${FILE}" ]]; then
 	# setup custom ipxe flags
-	cat <<-EOF >${IPXEDIR}/config/local/general.h
+	cat <<-EOF > ${IPXEDIR}/config/local/general.h
 		#define DOWNLOAD_PROTO_HTTPS
 		#define PARAM_CMD
 		#define CONSOLE_CMD
-	EOF
-		#define IMAGE_COMBOOT
 		#define IMAGE_PNG
-	cat <<-EOF >${IPXEDIR}/config/local/console.h
+		#define HTTP_HACK_GCE
+	EOF
+	## https://ipxe.org/console
+	cat <<-EOF > ${IPXEDIR}/config/local/console.h
+		#define CONSOLE_SERIAL CONSOLE_USAGE_ALL
+		#define COMCONSOLE COM1
+		#define COMSPEED 115200
+		#define COMDATA 8
+		#define COMPARITY 0
+		#define COMSTOP 1
+		#define LOG_LEVEL LOG_ALL
 		#define PING_CMD
 		#define NSLOOKUP_CMD
 	EOF
-		#define	CONSOLE_FRAMEBUFFER
+	#define	CONSOLE_FRAMEBUFFER
 
 	# build iso
-	#MAKECMD="make -C ${IPXEDIR} bin/ipxe.iso"
-	#if [[ -n "${IPXE}" ]]; then
-	#	MAKECMD+=" EMBED=${MYDIR}/${IPXE}"
-	#fi
-
-	# build bios+efi compatible iso
-	MAKECMD="make -C ${IPXEDIR} bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi"
+	MAKECMD="make -C ${IPXEDIR} bin/ipxe.iso"
 	if [[ -n "${IPXE}" ]]; then
 		MAKECMD+=" EMBED=${MYDIR}/${IPXE}"
 	fi
-	IMGCMD="${IPXEDIR}/util/genfsimg -o ipxe.iso bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi"
-
 	echo "${MAKECMD}"
 	eval "${MAKECMD}"
-	cd ipxe/src
-	echo "${IMGCMD}"
-	eval "${IMGCMD}"
-	cd ../..
-	echo "MOVING FILE ${IPXEDIR}/ipxe.iso"
-	mv ${IPXEDIR}/ipxe.iso ${MYDIR}/${FILE}
+	mv ${IPXEDIR}/bin/ipxe.iso ${MYDIR}/${FILE}
 	printf "File: $(ccyan "${FILE}") created\n" 1>&2
 else
 	printf "[$(corange "ERROR")]: Usage: $(cgreen "make.iso.sh") $(ccyan "<output.file> [ <ipxe.script> ]")\n" 1>&2

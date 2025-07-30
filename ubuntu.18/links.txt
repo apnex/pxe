@@ -1,0 +1,2 @@
+## cloud-init
+https://ubuntu.com/server/docs/install/autoinstall-quickstart

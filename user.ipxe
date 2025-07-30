@@ -1,9 +1,0 @@
-#!ipxe
-  
-ifopen net0
-route
-set user-class apnex
-dhcp
-ifopen net0
-route
-autoboot

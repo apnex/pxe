@@ -1,0 +1,15 @@
+#!ipxe
+dhcp net0
+
+set install_params auto=true priority=critical
+set mirror http://releases.ubuntu.com
+set ubuntu_version noble
+set mirrorcfg mirror/suite=${ubuntu_version}
+set dir ${mirror}/${ubuntu_version}/netboot/amd64
+set cloudiniturl http://pxe.apnex.io/ubuntu/
+
+echo ${dir}
+kernel ${dir}/linux ${install_params} ${mirrorcfg} autoinstall ds=nocloud-net;s=${cloudiniturl} -- quiet initrd=initrd
+initrd ${dir}/initrd
+
+boot

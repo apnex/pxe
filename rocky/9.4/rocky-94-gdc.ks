@@ -1,0 +1,113 @@
+url --url http://dl.rockylinux.org/vault/rocky/9.4/BaseOS/x86_64/os/
+firstboot --enable
+eula --agreed
+reboot
+
+# Partition clearing information & disable biosdevname! (package also removed)
+# change to ext4 -- default is xfs gets corrupted on esx!
+network --bootproto=dhcp --device=link --noipv6 --onboot=on --activate
+rootpw --plaintext google1!
+selinux --disabled
+firewall --disabled
+keyboard us
+lang en_US.UTF-8
+timezone Australia/Sydney --utc
+
+# Disk setup
+ignoredisk --only-use=sda
+bootloader --location=mbr --append="net.ifnames=0 biosdevname=0 ipv6.disable=1"
+clearpart --all --initlabel
+zerombr
+
+# Partition clearing information
+#clearpart --none --initlabel
+part pv.50 --fstype="lvmpv" --ondisk=sda --size=1 --grow
+part /boot --fstype="xfs" --ondisk=sda --size=1024
+part /boot/efi --fstype="efi" --ondisk=sda --size=600 --fsoptions="umask=0077,shortname=winnt"
+volgroup rl_rocky --pesize=4096 pv.50
+logvol swap --fstype="swap" --size=8045 --name=swap --vgname=rl_rocky
+logvol / --fstype="xfs" --size=102400 --name=root --vgname=rl_rocky
+logvol /home --fstype="xfs" --size=1 --name=home --vgname=rl_rocky --grow
+
+%addon com_redhat_kdump --disable
+%end
+
+# packages
+%packages --excludedocs --inst-langs=en --exclude-weakdeps
+@core --nodefaults
+rocky-release
+dnf
+kernel
+net-tools
+nfs-utils
+dnf-utils
+hostname
+-aic94xx-firmware
+-ivtv-firmware
+-alsa-*
+-iwl*firmware
+-libertas*firmware
+-biosdevname
+-plymouth
+-iprutils
+-langpacks-en
+
+## additional packages
+tar
+tcpdump
+rsync
+nano
+qemu-guest-agent
+
+%end
+
+%post --interpreter /bin/bash
+# setup systemd to boot to the right runlevel
+rm -f /etc/systemd/system/default.target
+ln -s /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+echo .
+
+# we don't need this in virt
+#dnf -C -y remove linux-firmware
+
+# Remove firewalld; it is required to be present for install/image building.
+# but we dont ship it in cloud
+dnf -C -y remove firewalld --setopt="clean_requirements_on_remove=1"
+dnf -C -y remove avahi\* 
+sed -i '/^#NAutoVTs=.*/ a\
+NAutoVTs=0' /etc/systemd/logind.conf
+
+cat > /etc/sysconfig/network <<EOF
+NETWORKING=yes
+NOZEROCONF=yes
+EOF
+
+# this should *really* be an empty file - gotta make anaconda happy
+truncate -s 0 /etc/resolv.conf
+
+# For cloud images, 'eth0' _is_ the predictable device name, since
+# we don't want to be tied to specific virtual (!) hardware
+rm -f /etc/udev/rules.d/70*
+ln -s /dev/null /etc/udev/rules.d/80-net-name-slot.rules
+
+# simple eth0 config
+rm -f /etc/sysconfig/network-scripts/ifcfg-*
+cat > /etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
+TYPE=Ethernet
+BOOTPROTO=dhcp
+NAME=eth0
+DEVICE=eth0
+ONBOOT=yes
+EOF
+
+# need to add some code to modify sshd_config: UseDNS = no
+# this is causing delays on SSH login prompts
+sed -i 's/.*UseDNS.*/UseDNS no/g' /etc/ssh/sshd_config
+service sshd restart
+
+# clear seed / machine-id
+rm -f /var/lib/systemd/random-seed
+cat /dev/null > /etc/machine-id
+true
+
+%end

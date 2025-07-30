@@ -1,0 +1,17 @@
+#!ipxe
+dhcp net0
+
+set install_params auto=true priority=critical
+set mirror http://archive.ubuntu.com
+set base_dir ubuntu
+set ubuntu_version bionic
+set arch amd64
+set mirrorcfg mirror/suite=${ubuntu_version}
+set dir ${mirror}/${base_dir}/dists/${ubuntu_version}/main/installer-${arch}/current/images/netboot/ubuntu-installer/amd64
+set preseedurl http://pxe.apnex.io/ubuntu.preseed
+
+echo ${dir}
+kernel ${dir}/linux ${install_params} ${mirrorcfg} preseed/url=${preseedurl} -- quiet initrd=initrd.gz
+initrd ${dir}/initrd.gz
+
+boot

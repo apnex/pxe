@@ -1,0 +1,26 @@
+#!ipxe
+ifopen net0
+dhcp
+
+# set variables
+set alpine-repo http://dl-cdn.alpinelinux.org/alpine
+set version latest-stable
+set arch x86_64
+set hostname alpine
+set flavor virt
+set netboot ${alpine-repo}/${version}/releases/${arch}/netboot
+set apkovl alpine-install.tar.gz
+
+kernel ${netboot}/vmlinuz-${flavor}
+initrd ${netboot}/initramfs-${flavor}
+
+boot vmlinuz-${flavor} \
+    ip=dhcp \
+    console=tty0 \
+    hostname=${hostname} \
+    modules=loop,squashfs nomodeset \
+    modloop=${netboot}/modloop-${flavor} \
+    alpine_repo=${alpine-repo}/${version}/main/ \
+    apkovl=http://pxe.apnex.io/${apkovl}
+#   ssh_key=${base-url}/ssh/authorized_keys
+#   debug_init \

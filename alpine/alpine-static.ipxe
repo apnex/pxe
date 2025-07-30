@@ -1,0 +1,40 @@
+#!ipxe
+
+# set variables
+set hostname mysillyness
+set apkovl http://pxe.apnex.io/alpine/static-apkvol.tar.gz
+set alpine-repo http://dl-cdn.alpinelinux.org/alpine
+set version latest-stable
+set arch x86_64
+set flavor virt
+set netboot ${alpine-repo}/${version}/releases/${arch}/netboot
+
+# read and init net0
+ifopen net0
+echo -n net0.address-: && read net0/ip
+echo -n net0.netmask-: && read net0/netmask
+echo -n net0.gateway-: && read net0/gateway
+echo -n net0.dns-----: && read dns
+
+# show net stats
+echo ADDRESS-: ${net0/ip}
+echo NETMASK-: ${net0/netmask}
+echo GATEWAY-: ${net0/gateway}
+echo DNS-----: ${dns}
+route
+ifstat net0
+
+#kernel param syntax for ip=
+#https://www.kernel.org/doc/Documentation/filesystems/nfs/nfsroot.txt
+
+# init kernel with params and boot
+initrd ${netboot}/initramfs-${flavor}
+kernel ${netboot}/vmlinuz-${flavor} \
+    console=ttyS0,19200 \
+    ip=${net0/ip}::${net0/gateway}:${net0/netmask}:::none:${dns} \
+    hostname=${hostname} \
+    modules=loop,squashfs nomodeset \
+    modloop=${netboot}/modloop-${flavor} \
+    alpine_repo=${alpine-repo}/${version}/main/ \
+    apkovl=${apkovl}
+boot

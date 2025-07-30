@@ -1,0 +1,11 @@
+#!/sbin/openrc-run
+
+SCRIPT="http://pxe.apnex.io/alpine/alpine-static.sh"
+
+start () {
+	echo "Install Script [ ${SCRIPT} ]"
+	rm /etc/runlevels/default/local.stop # remove self from boot loop
+	wget -O /root/install.sh "${SCRIPT}?$(date +%s)"
+	chmod +x /root/install.sh
+	/root/install.sh >> /root/install.log
+}

@@ -1,0 +1,8 @@
+#!/sbin/openrc-run
+
+start () {
+	echo "Install Script [ install.sh ]"
+	rm /etc/runlevels/default/local.stop # remove self from boot loop
+	chmod +x /root/install.sh
+	/root/install.sh >> /root/install.log
+}

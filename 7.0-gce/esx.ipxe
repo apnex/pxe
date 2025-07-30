@@ -1,0 +1,11 @@
+#!ipxe
+set boot http://esx.apnex.io/7.0-gce
+echo Streaming ESXi 7.0-gce installation files
+dhcp
+show net0/ip
+show net0/netmask
+show net0/gateway
+show net0/dns
+show net0/dhcp-server
+kernel ${boot}/mboot.c32 -c ${boot}/boot.cfg gdbPort=none logPort=none tty2Port=com1
+boot
